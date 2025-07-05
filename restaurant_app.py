@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 
 # Set page configuration
 st.set_page_config(page_title="Restaurant Finder", layout="wide")
@@ -125,38 +127,71 @@ with col2:
     st.subheader("🗺️ Restaurant Locations")
     
     if len(filtered_df) > 0:
-        # Create map
-        map_df = filtered_df[['Name', 'latitude', 'longitude', 'Rating', 'Cuisine']].copy()
-        
-        st.map(
-            map_df,
-            latitude='latitude',
-            longitude='longitude',
-            size='Rating',
-            color='#ff6b6b',
-            zoom=12
+        # Create interactive map with Plotly
+        fig = px.scatter_mapbox(
+            filtered_df,
+            lat="latitude",
+            lon="longitude",
+            hover_name="Name",
+            hover_data={
+                "Cuisine": True,
+                "Rating": True,
+                "Price Range": True,
+                "Address": True,
+                "Phone": True,
+                "Hours": True,
+                "latitude": False,
+                "longitude": False
+            },
+            color="Rating",
+            size="Rating",
+            color_continuous_scale="Viridis",
+            size_max=20,
+            zoom=12,
+            height=500
         )
         
-        # Show selected restaurant details
-        st.markdown("### 🏷️ Restaurant Details")
-        selected_restaurant = st.selectbox(
-            "Select a restaurant for details:",
-            filtered_df['Name'].tolist()
+        # Update map layout
+        fig.update_layout(
+            mapbox_style="open-street-map",
+            margin={"r":0,"t":0,"l":0,"b":0},
+            coloraxis_colorbar=dict(
+                title="Rating",
+                title_side="right"
+            )
         )
         
-        if selected_restaurant:
-            restaurant_info = filtered_df[filtered_df['Name'] == selected_restaurant].iloc[0]
-            
-            st.markdown(f"""
-            **{restaurant_info['Name']}**
-            
-            🍽️ **Cuisine:** {restaurant_info['Cuisine']}  
-            ⭐ **Rating:** {restaurant_info['Rating']}  
-            💰 **Price:** {restaurant_info['Price Range']}  
-            📍 **Address:** {restaurant_info['Address']}  
-            📞 **Phone:** {restaurant_info['Phone']}  
-            🕐 **Hours:** {restaurant_info['Hours']}
-            """)
+        # Customize hover template
+        fig.update_traces(
+            hovertemplate="<b>%{hovertext}</b><br>" +
+                         "🍽️ Cuisine: %{customdata[0]}<br>" +
+                         "⭐ Rating: %{customdata[1]}<br>" +
+                         "💰 Price: %{customdata[2]}<br>" +
+                         "📍 Address: %{customdata[3]}<br>" +
+                         "📞 Phone: %{customdata[4]}<br>" +
+                         "🕐 Hours: %{customdata[5]}<br>" +
+                         "<extra></extra>"
+        )
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Instructions for map interaction
+        st.info("💡 **Tip:** Hover over or click on the markers to see restaurant details!")
+        
+        # Optional: Show summary of filtered restaurants
+        st.markdown("### 📋 Filtered Restaurants")
+        for _, restaurant in filtered_df.iterrows():
+            with st.expander(f"🍽️ {restaurant['Name']} - {restaurant['Rating']}⭐"):
+                st.markdown(f"""
+                **{restaurant['Name']}**
+                
+                🍽️ **Cuisine:** {restaurant['Cuisine']}  
+                ⭐ **Rating:** {restaurant['Rating']}  
+                💰 **Price:** {restaurant['Price Range']}  
+                📍 **Address:** {restaurant['Address']}  
+                📞 **Phone:** {restaurant['Phone']}  
+                🕐 **Hours:** {restaurant['Hours']}
+                """)
     else:
         st.info("No restaurants to display on map.")
 
