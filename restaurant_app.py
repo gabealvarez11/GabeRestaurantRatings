@@ -58,7 +58,7 @@ df = pd.DataFrame(restaurants_data)
 # Add coordinates for map (sample coordinates around a city center)
 # In a real app, you'd use geocoding to get actual coordinates
 np.random.seed(42)  # For consistent coordinates
-base_lat, base_lon = 40.7128, -74.0060  # NYC coordinates as example
+base_lat, base_lon = 37.7749, -122.4194  # SF coordinates as example
 df['latitude'] = base_lat + np.random.uniform(-0.01, 0.01, len(df))
 df['longitude'] = base_lon + np.random.uniform(-0.01, 0.01, len(df))
 
