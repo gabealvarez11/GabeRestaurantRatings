@@ -143,28 +143,25 @@ with col2:
                 "latitude": False,
                 "longitude": False
             },
-            color="Rating",
-            size="Rating",
-            color_continuous_scale="plasma",
-            size_max=25,
+            #color="Cuisine",
+            size_max=20,
             zoom=12,
             height=500
         )
         
-        # Update map layout with sleek theme
+        # Update map layout with clean light theme
         fig.update_layout(
             mapbox_style="carto-positron",
             margin={"r":0,"t":0,"l":0,"b":0},
-            coloraxis_colorbar=dict(
-                title="Rating",
-                title_side="right",
-                title_font=dict(color="white"),
-                tickfont=dict(color="white")
-            ),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            font=dict(color="white")
-        )
+            # legend=dict(
+            #     title="Cuisine Type",
+            #     orientation="v",
+            #     yanchor="top",
+            #     y=1,
+            #     xanchor="left",
+            #     x=1.02
+            # )
+        )    
         
         # Customize hover template with better styling
         fig.update_traces(
