@@ -145,35 +145,42 @@ with col2:
             },
             color="Rating",
             size="Rating",
-            color_continuous_scale="Viridis",
-            size_max=20,
+            color_continuous_scale="plasma",
+            size_max=25,
             zoom=12,
             height=500
         )
         
-        # Update map layout
+        # Update map layout with sleek theme
         fig.update_layout(
-            mapbox_style="open-street-map",
+            mapbox_style="carto-positron",
             margin={"r":0,"t":0,"l":0,"b":0},
             coloraxis_colorbar=dict(
                 title="Rating",
-                title_side="right"
-            )
+                title_side="right",
+                title_font=dict(color="white"),
+                tickfont=dict(color="white")
+            ),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color="white")
         )
         
-        # Customize hover template
+        # Customize hover template with better styling
         fig.update_traces(
-            hovertemplate="<b>%{hovertext}</b><br>" +
-                         "🍽️ Cuisine: %{customdata[0]}<br>" +
-                         "⭐ Rating: %{customdata[1]}<br>" +
-                         "💰 Price: %{customdata[2]}<br>" +
-                         "📍 Address: %{customdata[3]}<br>" +
-                         "📞 Phone: %{customdata[4]}<br>" +
-                         "🕐 Hours: %{customdata[5]}<br>" +
-                         "<extra></extra>"
+            hovertemplate="<b style='font-size:16px;'>%{hovertext}</b><br>" +
+                         "<span style='color:#FFD700;'>🍽️</span> <b>Cuisine:</b> %{customdata[0]}<br>" +
+                         "<span style='color:#FFD700;'>⭐</span> <b>Rating:</b> %{customdata[1]}<br>" +
+                         "<span style='color:#90EE90;'>💰</span> <b>Price:</b> %{customdata[2]}<br>" +
+                         "<span style='color:#87CEEB;'>📍</span> <b>Address:</b> %{customdata[3]}<br>" +
+                         "<span style='color:#F0E68C;'>📞</span> <b>Phone:</b> %{customdata[4]}<br>" +
+                         "<span style='color:#DDA0DD;'>🕐</span> <b>Hours:</b> %{customdata[5]}<br>" +
+                         "<extra></extra>",
+            marker=dict(opacity=0.9)
         )
         
         st.plotly_chart(fig, use_container_width=True)
+        
         
         # Instructions for map interaction
         st.info("💡 **Tip:** Hover over or click on the markers to see restaurant details!")
