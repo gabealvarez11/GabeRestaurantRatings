@@ -56,7 +56,7 @@ def filter_data(df):
 
 def make_map(filtered_df):
     # Create interactive map with Plotly
-    fig = px.scatter_mapbox(
+    fig = px.scatter_map(
         filtered_df,
         lat="latitude",
         lon="longitude",
@@ -100,7 +100,9 @@ def make_map(filtered_df):
         on_select="rerun",
         selection_mode="points"
     )
-    
+
+    st.markdown("<div style='margin-bottom: 50px;'></div>", unsafe_allow_html=True)
+
     # Handle click events
     if selected_points and selected_points.selection and selected_points.selection.points:
         clicked_point = selected_points.selection.points[0]
