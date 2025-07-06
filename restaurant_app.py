@@ -154,9 +154,7 @@ with col1:
         # Handle click events
         if selected_points and selected_points.selection and selected_points.selection.points:
             clicked_point = selected_points.selection.points[0]
-            point_index = clicked_point['point_index']
-            clicked_restaurant = filtered_df.iloc[point_index]['Name']
-            st.session_state.selected_restaurant = clicked_restaurant
+            st.session_state.selected_restaurant = clicked_point['point_index']
         
     else:
         st.info("No restaurants to display on map.")
@@ -184,12 +182,11 @@ with col2:
         # Handle table selection
         if st.session_state.get("restaurant_table", {}).get("selection", {}).get("rows"):
             selected_row = st.session_state.restaurant_table.selection.rows[0]
-            selected_restaurant_name = filtered_df.iloc[selected_row]['Name']
-            st.session_state.selected_restaurant = selected_restaurant_name
+            st.session_state.selected_restaurant = selected_row
         
         # Display selected restaurant information
-        if st.session_state.selected_restaurant and st.session_state.selected_restaurant in filtered_df['Name'].values:
-            selected_info = filtered_df[filtered_df['Name'] == st.session_state.selected_restaurant].iloc[0]
+        if st.session_state.selected_restaurant is not None:
+            selected_info = filtered_df.iloc[st.session_state.selected_restaurant, :]
             
             st.subheader("🏷️ Selected Restaurant")
     
