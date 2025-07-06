@@ -99,6 +99,10 @@ col1, col2 = st.columns([1,1])
 with col1:
     st.subheader("🗺️ Restaurant Locations")
     
+    # Initialize selected restaurant in session state
+    if "selected_restaurant" not in st.session_state:
+        st.session_state.selected_restaurant = None
+
     if len(filtered_df) > 0:
         # Create interactive map with Plotly
         fig = px.scatter_mapbox(
@@ -138,20 +142,20 @@ with col1:
                         "<extra></extra>",
             marker=dict(opacity=0.9)
         )
+
+        selected_points = st.plotly_chart(
+            fig, 
+            use_container_width=True, 
+            key="restaurant_map",
+            on_select="rerun",
+            selection_mode="points"
+        )
         
-        st.plotly_chart(fig, use_container_width=True, key="restaurant_map")
-        
-        # Get click data from the map
-        click_data = st.session_state.get("restaurant_map", {}).get("selection", {}).get("points", [])
-        
-        # Initialize selected restaurant in session state
-        if "selected_restaurant" not in st.session_state:
-            st.session_state.selected_restaurant = None
-        
-        # Handle map click events
-        if click_data:
-            clicked_point = click_data[0]
-            clicked_restaurant = filtered_df.iloc[clicked_point['pointIndex']]['Name']
+        # Handle click events
+        if selected_points and selected_points.selection and selected_points.selection.points:
+            clicked_point = selected_points.selection.points[0]
+            point_index = clicked_point['point_index']
+            clicked_restaurant = filtered_df.iloc[point_index]['Name']
             st.session_state.selected_restaurant = clicked_restaurant
         
     else:
