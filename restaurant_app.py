@@ -43,6 +43,13 @@ restaurants_data = {
         'https://www.wikipedia.org/',
         'https://www.thesaurus.com/'
     ],
+    'Blurb': [
+        "Blah blah blah",
+        "Blah blah blah",
+        "Blah blah blah",
+        "Blah blah blah",
+        "Blah blah blah",
+    ]
 }
 
 # Create DataFrame
@@ -105,8 +112,9 @@ with col1:
                 "Price Range": True,
                 "Address": True,
                 "Website": True,
+                "Blurb":False,
                 "latitude": False,
-                "longitude": False
+                "longitude": False,
             },
             size_max=15,
             zoom=12,
@@ -121,13 +129,13 @@ with col1:
         
         # Customize hover template with better styling
         fig.update_traces(
-            hovertemplate="<b style='font-size:16px;'>%{hovertext}</b><br>" +
-                         "<span style='color:#FFD700;'>🍽️</span> <b>Cuisine:</b> %{customdata[0]}<br>" +
-                         "<span style='color:#FFD700;'>⭐</span> <b>Rating:</b> %{customdata[1]}<br>" +
-                         "<span style='color:#90EE90;'>💰</span> <b>Price:</b> %{customdata[2]}<br>" +
-                         "<span style='color:#87CEEB;'>📍</span> <b>Address:</b> %{customdata[3]}<br>" +
-                         "<span style='color:#F0E68C;'>📞</span> <b>Website:</b> %{customdata[4]}<br>" +
-                         "<extra></extra>",
+            hovertemplate="<b>%{hovertext}</b><br>" +
+                        "🍽️ Cuisine: %{customdata[0]}<br>" +
+                        "⭐ Rating: %{customdata[1]}<br>" +
+                        "💰 Price: %{customdata[2]}<br>" +
+                        "📍 Address: %{customdata[3]}<br>" +
+                        "🌐 Website: See table." +
+                        "<extra></extra>",
             marker=dict(opacity=0.9)
         )
         
@@ -155,7 +163,7 @@ with col2:
     if len(filtered_df) > 0:
         # Display table with clickable rows
         st.dataframe(
-            filtered_df.drop(columns=["latitude", "longitude"]).copy(),
+            filtered_df.drop(columns=["latitude", "longitude", "Blurb"]).copy(),
             use_container_width=True,
             hide_index=True,
             column_config={
@@ -188,6 +196,8 @@ with col2:
                 st.write(f"💰 **Price Range:** {selected_info['Price Range']}")
                 st.write(f"📍 **Address:** {selected_info['Address']}")
                 st.write(f"🌐 **Website:** {selected_info['Website']}")
+                st.write(f"💬 **Blurb:** {selected_info['Blurb']}")
+
         else:
             st.markdown("### 🏷️ Restaurant Details")
             st.info("💡 **Tip:** Click on a marker or restaurant in the table to see detailed information!")
