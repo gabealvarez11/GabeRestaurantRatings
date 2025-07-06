@@ -27,7 +27,7 @@ restaurants_data = {
         'Mexican',
         'Cafe'
     ],
-    'Rating': [4.5, 4.2, 4.7, 4.1, 4.3],
+    'Rating': [1,1,2,3,3],
     'Price Range': ['$$$', '$$', '$$$', '$', '$$'],
     'Address': [
         '123 Main St, Downtown',
@@ -36,20 +36,13 @@ restaurants_data = {
         '321 Elm St, Arts District',
         '654 Maple Dr, University Area'
     ],
-    'Phone': [
-        '(555) 123-4567',
-        '(555) 234-5678',
-        '(555) 345-6789',
-        '(555) 456-7890',
-        '(555) 567-8901'
+    'Website': [
+        'https://www.google.com/',
+        'https://papago.naver.com/',
+        'https://www.bing.com/',
+        'https://www.wikipedia.org/',
+        'https://www.thesaurus.com/'
     ],
-    'Hours': [
-        '5:00 PM - 10:00 PM',
-        '11:00 AM - 9:00 PM',
-        '12:00 PM - 10:00 PM',
-        '11:00 AM - 8:00 PM',
-        '7:00 AM - 6:00 PM'
-    ]
 }
 
 # Create DataFrame
@@ -70,7 +63,7 @@ cuisine_options = ['All'] + list(df['Cuisine'].unique())
 selected_cuisine = st.sidebar.selectbox("Select Cuisine:", cuisine_options)
 
 # Rating filter
-min_rating = st.sidebar.slider("Minimum Rating:", 1.0, 5.0, 1.0, 0.1)
+min_rating = st.sidebar.slider("Minimum Rating:", 1, 3, 1, 1)
 
 # Price range filter
 price_options = ['All'] + list(df['Price Range'].unique())
@@ -84,8 +77,14 @@ if selected_cuisine != 'All':
 
 filtered_df = filtered_df[filtered_df['Rating'] >= min_rating]
 
+def format_stars(rating):
+    return "⭐" * int(rating) if rating > 0 else ""
+
+filtered_df["Rating"] = filtered_df["Rating"].apply(format_stars)
+
 if selected_price != 'All':
     filtered_df = filtered_df[filtered_df['Price Range'] == selected_price]
+
 
 # Main content area
 col1, col2 = st.columns([1,1])
@@ -105,8 +104,7 @@ with col1:
                 "Rating": True,
                 "Price Range": True,
                 "Address": True,
-                "Phone": True,
-                "Hours": True,
+                "Website": True,
                 "latitude": False,
                 "longitude": False
             },
@@ -128,8 +126,7 @@ with col1:
                          "<span style='color:#FFD700;'>⭐</span> <b>Rating:</b> %{customdata[1]}<br>" +
                          "<span style='color:#90EE90;'>💰</span> <b>Price:</b> %{customdata[2]}<br>" +
                          "<span style='color:#87CEEB;'>📍</span> <b>Address:</b> %{customdata[3]}<br>" +
-                         "<span style='color:#F0E68C;'>📞</span> <b>Phone:</b> %{customdata[4]}<br>" +
-                         "<span style='color:#DDA0DD;'>🕐</span> <b>Hours:</b> %{customdata[5]}<br>" +
+                         "<span style='color:#F0E68C;'>📞</span> <b>Website:</b> %{customdata[4]}<br>" +
                          "<extra></extra>",
             marker=dict(opacity=0.9)
         )
@@ -158,15 +155,14 @@ with col2:
     if len(filtered_df) > 0:
         # Display table with clickable rows
         st.dataframe(
-            filtered_df,
+            filtered_df.drop(columns=["latitude", "longitude"]).copy(),
             use_container_width=True,
             hide_index=True,
             column_config={
                 "Name": st.column_config.TextColumn("Restaurant Name", width="medium"),
-                "Rating": st.column_config.NumberColumn("Rating", format="%.1f ⭐"),
+                "Rating": st.column_config.TextColumn("Rating", width = "small"),
                 "Price Range": st.column_config.TextColumn("Price", width="small"),
-                "Phone": st.column_config.TextColumn("Phone", width="medium"),
-                "Hours": st.column_config.TextColumn("Hours", width="medium")
+                "Website": st.column_config.TextColumn("Website", width="medium"),
             },
             on_select="rerun",
             selection_mode="single-row",
@@ -191,8 +187,7 @@ with col2:
                 <p style="color: #333;"><strong>⭐ Rating:</strong> {selected_info['Rating']}</p>
                 <p style="color: #333;"><strong>💰 Price Range:</strong> {selected_info['Price Range']}</p>
                 <p style="color: #333;"><strong>📍 Address:</strong> {selected_info['Address']}</p>
-                <p style="color: #333;"><strong>📞 Phone:</strong> {selected_info['Phone']}</p>
-                <p style="color: #333;"><strong>🕐 Hours:</strong> {selected_info['Hours']}</p>
+                <p style="color: #333;"><strong>📞 Website:</strong> {selected_info['Website']}</p>
             </div>
             """, unsafe_allow_html=True)
         else:
