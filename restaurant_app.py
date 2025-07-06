@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Set page configuration
-st.set_page_config(page_title="Bay Area Veg", layout="wide")
+st.set_page_config(page_title="Bay Area Veggie", layout="wide")
 
 # App title
 st.title("🍽️ Bay Area vegetarian eats, curated by Gabe and Carol")
