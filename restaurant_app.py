@@ -16,19 +16,9 @@ def setup_page():
     st.markdown("Use the filters on the left to narrow the options, then select a restaurant on the map or in the list to see more details, including our review.")
 
 def get_data():
-    url = "https://docs.google.com/spreadsheets/d/1t7Ptfghr5cWrcvgUmAy0oR-rgbH4SjaBZMt2gb78PK4/edit?usp=sharing"
-
     conn = st.connection("gsheets", type=GSheetsConnection)
-
-    df = conn.read(spreadsheet=url)
-
-    # Add coordinates for map (sample coordinates around a city center)
-    # In a real app, you'd use geocoding to get actual coordinates
-    np.random.seed(42)  # For consistent coordinates
-    base_lat, base_lon = 37.7749, -122.4194  # SF coordinates as example
-    df['latitude'] = base_lat + np.random.uniform(-0.01, 0.01, len(df))
-    df['longitude'] = base_lon + np.random.uniform(-0.01, 0.01, len(df))
-
+    df = conn.read(spreadsheet=st.secrets["connections"]["gsheets"]["spreadsheet"])
+    df[["latitude", "longitude"]] = df.pop("lat_long").str.split(",", expand=True).astype(float)
     return df
 
 def filter_data(df):
