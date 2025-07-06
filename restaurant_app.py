@@ -122,7 +122,6 @@ with col1:
                 "latitude": False,
                 "longitude": False,
             },
-            size_max=15,
             zoom=12,
             height=500
         )
@@ -142,7 +141,7 @@ with col1:
                         "📍 Address: %{customdata[3]}<br>" +
                         "🌐 Website: See table." +
                         "<extra></extra>",
-            marker=dict(opacity=0.9)
+            marker=dict(size=20, opacity=0.9)
         )
 
         selected_points = st.plotly_chart(
