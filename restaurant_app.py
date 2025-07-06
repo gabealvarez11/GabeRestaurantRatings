@@ -88,40 +88,7 @@ if selected_price != 'All':
     filtered_df = filtered_df[filtered_df['Price Range'] == selected_price]
 
 # Main content area
-col1, col2 = st.columns([2, 2])
-
-with col2:
-    st.subheader("📋 Restaurant List")
-    
-    if len(filtered_df) > 0:
-        # Display table without lat/lon columns
-        display_df = filtered_df.drop(['latitude', 'longitude'], axis=1)
-        
-        # Style the dataframe
-        st.dataframe(
-            display_df,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Name": st.column_config.TextColumn("Restaurant Name", width="medium"),
-                "Rating": st.column_config.NumberColumn("Rating", format="%.1f ⭐"),
-                "Price Range": st.column_config.TextColumn("Price", width="small"),
-                "Phone": st.column_config.TextColumn("Phone", width="medium"),
-                "Hours": st.column_config.TextColumn("Hours", width="medium")
-            }
-        )
-        
-        # Summary statistics
-        st.markdown("### 📊 Summary")
-        col_a, col_b, col_c = st.columns(3)
-        with col_a:
-            st.metric("Total Restaurants", len(filtered_df))
-        with col_b:
-            st.metric("Average Rating", f"{filtered_df['Rating'].mean():.1f}⭐")
-        with col_c:
-            st.metric("Top Rated", f"{filtered_df['Rating'].max():.1f}⭐")
-    else:
-        st.warning("No restaurants match your filters. Try adjusting your criteria.")
+col1, col2 = st.columns([1,1])
 
 with col1:
     st.subheader("🗺️ Restaurant Locations")
@@ -143,8 +110,7 @@ with col1:
                 "latitude": False,
                 "longitude": False
             },
-            #color="Cuisine",
-            size_max=20,
+            size_max=15,
             zoom=12,
             height=500
         )
@@ -153,15 +119,7 @@ with col1:
         fig.update_layout(
             mapbox_style="carto-positron",
             margin={"r":0,"t":0,"l":0,"b":0},
-            # legend=dict(
-            #     title="Cuisine Type",
-            #     orientation="v",
-            #     yanchor="top",
-            #     y=1,
-            #     xanchor="left",
-            #     x=1.02
-            # )
-        )    
+        )
         
         # Customize hover template with better styling
         fig.update_traces(
@@ -176,14 +134,72 @@ with col1:
             marker=dict(opacity=0.9)
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key="restaurant_map")
         
+        # Get click data from the map
+        click_data = st.session_state.get("restaurant_map", {}).get("selection", {}).get("points", [])
         
-        # Instructions for map interaction
-        st.info("💡 **Tip:** Hover over or click on the markers to see restaurant details!")
+        # Initialize selected restaurant in session state
+        if "selected_restaurant" not in st.session_state:
+            st.session_state.selected_restaurant = None
+        
+        # Handle map click events
+        if click_data:
+            clicked_point = click_data[0]
+            clicked_restaurant = filtered_df.iloc[clicked_point['pointIndex']]['Name']
+            st.session_state.selected_restaurant = clicked_restaurant
         
     else:
         st.info("No restaurants to display on map.")
+
+with col2:
+    st.subheader("📋 Restaurant List")
+    
+    if len(filtered_df) > 0:
+        # Display table with clickable rows
+        st.dataframe(
+            filtered_df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Name": st.column_config.TextColumn("Restaurant Name", width="medium"),
+                "Rating": st.column_config.NumberColumn("Rating", format="%.1f ⭐"),
+                "Price Range": st.column_config.TextColumn("Price", width="small"),
+                "Phone": st.column_config.TextColumn("Phone", width="medium"),
+                "Hours": st.column_config.TextColumn("Hours", width="medium")
+            },
+            on_select="rerun",
+            selection_mode="single-row",
+            key="restaurant_table"
+        )
+        
+        # Handle table selection
+        if st.session_state.get("restaurant_table", {}).get("selection", {}).get("rows"):
+            selected_row = st.session_state.restaurant_table.selection.rows[0]
+            selected_restaurant_name = filtered_df.iloc[selected_row]['Name']
+            st.session_state.selected_restaurant = selected_restaurant_name
+        
+        # Display selected restaurant information
+        if st.session_state.selected_restaurant and st.session_state.selected_restaurant in filtered_df['Name'].values:
+            selected_info = filtered_df[filtered_df['Name'] == st.session_state.selected_restaurant].iloc[0]
+            
+            st.markdown("### 🏷️ Selected Restaurant")
+            st.markdown(f"""
+            <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #ff6b6b;">
+                <h3 style="color: #333; margin-top: 0;">{selected_info['Name']}</h3>
+                <p><strong>🍽️ Cuisine:</strong> {selected_info['Cuisine']}</p>
+                <p><strong>⭐ Rating:</strong> {selected_info['Rating']}</p>
+                <p><strong>💰 Price Range:</strong> {selected_info['Price Range']}</p>
+                <p><strong>📍 Address:</strong> {selected_info['Address']}</p>
+                <p><strong>📞 Phone:</strong> {selected_info['Phone']}</p>
+                <p><strong>🕐 Hours:</strong> {selected_info['Hours']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("### 🏷️ Restaurant Details")
+            st.info("💡 **Tip:** Click on a marker or restaurant in the table to see detailed information!")
+    else:
+        st.warning("No restaurants match your filters. Try adjusting your criteria.")
 
 # Footer
 st.markdown("---")
