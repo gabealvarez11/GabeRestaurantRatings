@@ -187,12 +187,12 @@ with col2:
             st.markdown(f"""
             <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #ff6b6b;">
                 <h3 style="color: #333; margin-top: 0;">{selected_info['Name']}</h3>
-                <p><strong>🍽️ Cuisine:</strong> {selected_info['Cuisine']}</p>
-                <p><strong>⭐ Rating:</strong> {selected_info['Rating']}</p>
-                <p><strong>💰 Price Range:</strong> {selected_info['Price Range']}</p>
-                <p><strong>📍 Address:</strong> {selected_info['Address']}</p>
-                <p><strong>📞 Phone:</strong> {selected_info['Phone']}</p>
-                <p><strong>🕐 Hours:</strong> {selected_info['Hours']}</p>
+                <p style="color: #333;"><strong>🍽️ Cuisine:</strong> {selected_info['Cuisine']}</p>
+                <p style="color: #333;"><strong>⭐ Rating:</strong> {selected_info['Rating']}</p>
+                <p style="color: #333;"><strong>💰 Price Range:</strong> {selected_info['Price Range']}</p>
+                <p style="color: #333;"><strong>📍 Address:</strong> {selected_info['Address']}</p>
+                <p style="color: #333;"><strong>📞 Phone:</strong> {selected_info['Phone']}</p>
+                <p style="color: #333;"><strong>🕐 Hours:</strong> {selected_info['Hours']}</p>
             </div>
             """, unsafe_allow_html=True)
         else:
