@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from streamlit_gsheets import GSheetsConnection
 
 def setup_page():
     # Set page configuration
@@ -15,49 +16,11 @@ def setup_page():
     st.markdown("Use the filters on the left to narrow the options, then select a restaurant on the map or in the list to see more details, including our review.")
 
 def get_data():
-    # Sample restaurant data
-    restaurants_data = {
-        'Name': [
-            'The Golden Spoon',
-            'Bella Vista Italian',
-            'Sakura Sushi Bar',
-            'Taco Libre',
-            'The Coffee House'
-        ],
-        'Cuisine': [
-            'American Fine Dining',
-            'Italian',
-            'Japanese',
-            'Mexican',
-            'Cafe'
-        ],
-        'Rating': [1,1,2,3,3],
-        'Price Range': ['$$$', '$$', '$$$', '$', '$$'],
-        'Address': [
-            '123 Main St, Downtown',
-            '456 Oak Ave, Little Italy',
-            '789 Pine Rd, Midtown',
-            '321 Elm St, Arts District',
-            '654 Maple Dr, University Area'
-        ],
-        'Website': [
-            'https://www.google.com/',
-            'https://papago.naver.com/',
-            'https://www.bing.com/',
-            'https://www.wikipedia.org/',
-            'https://www.thesaurus.com/'
-        ],
-        'Blurb': [
-            "Blah blah blah",
-            "Blah blah blah",
-            "Blah blah blah",
-            "Blah blah blah",
-            "Blah blah blah",
-        ]
-    }
+    url = "https://docs.google.com/spreadsheets/d/1t7Ptfghr5cWrcvgUmAy0oR-rgbH4SjaBZMt2gb78PK4/edit?usp=sharing"
 
-    # Create DataFrame
-    df = pd.DataFrame(restaurants_data)
+    conn = st.connection("gsheets", type=GSheetsConnection)
+
+    df = conn.read(spreadsheet=url)
 
     # Add coordinates for map (sample coordinates around a city center)
     # In a real app, you'd use geocoding to get actual coordinates
@@ -205,12 +168,12 @@ filtered_df = filter_data(df)
 # Main content area
 col1, col2 = st.columns([1,1])
 
+# Initialize selected restaurant in session state
+if "selected_restaurant" not in st.session_state:
+    st.session_state.selected_restaurant = None
+
 with col1:
     st.subheader("🗺️ Restaurant Locations")
-    
-    # Initialize selected restaurant in session state
-    if "selected_restaurant" not in st.session_state:
-        st.session_state.selected_restaurant = None
 
     if len(filtered_df) > 0:
         make_map(filtered_df)
