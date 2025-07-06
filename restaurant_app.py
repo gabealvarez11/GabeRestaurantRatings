@@ -88,9 +88,9 @@ if selected_price != 'All':
     filtered_df = filtered_df[filtered_df['Price Range'] == selected_price]
 
 # Main content area
-col1, col2 = st.columns([3, 2])
+col1, col2 = st.columns([2, 2])
 
-with col1:
+with col2:
     st.subheader("📋 Restaurant List")
     
     if len(filtered_df) > 0:
@@ -123,7 +123,7 @@ with col1:
     else:
         st.warning("No restaurants match your filters. Try adjusting your criteria.")
 
-with col2:
+with col1:
     st.subheader("🗺️ Restaurant Locations")
     
     if len(filtered_df) > 0:
@@ -182,20 +182,6 @@ with col2:
         # Instructions for map interaction
         st.info("💡 **Tip:** Hover over or click on the markers to see restaurant details!")
         
-        # Optional: Show summary of filtered restaurants
-        st.markdown("### 📋 Filtered Restaurants")
-        for _, restaurant in filtered_df.iterrows():
-            with st.expander(f"🍽️ {restaurant['Name']} - {restaurant['Rating']}⭐"):
-                st.markdown(f"""
-                **{restaurant['Name']}**
-                
-                🍽️ **Cuisine:** {restaurant['Cuisine']}  
-                ⭐ **Rating:** {restaurant['Rating']}  
-                💰 **Price:** {restaurant['Price Range']}  
-                📍 **Address:** {restaurant['Address']}  
-                📞 **Phone:** {restaurant['Phone']}  
-                🕐 **Hours:** {restaurant['Hours']}
-                """)
     else:
         st.info("No restaurants to display on map.")
 
