@@ -5,11 +5,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 # Set page configuration
-st.set_page_config(page_title="Restaurant Finder", layout="wide")
+st.set_page_config(page_title="Bay Area Veg", layout="wide")
 
 # App title
-st.title("🍽️ Restaurant Finder")
+st.title("🍽️ Bay Area vegetarian eats, curated by Gabe and Carol")
 st.markdown("---")
+st.markdown("We've tried over 200 spots around town and have identified the following restaurants as deserving of one, two, or three 'Caro-lin' stars.")
+st.markdown("Use the filters on the left to narrow the options, then select a restaurant on the map or in the list to see more details, including our review.")
 
 # Sample restaurant data
 restaurants_data = {
@@ -207,4 +209,4 @@ with col2:
 
 # Footer
 st.markdown("---")
-st.markdown("*This is a sample restaurant finder app. In a real application, you would connect to actual restaurant data and use geocoding services for precise locations.*")
+st.markdown("*Please check back for more upcoming reviews, or reach out if you have any recommendations!*")
