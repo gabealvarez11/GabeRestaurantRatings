@@ -162,7 +162,7 @@ with col2:
                 "Name": st.column_config.TextColumn("Restaurant Name", width="medium"),
                 "Rating": st.column_config.TextColumn("Rating", width = "small"),
                 "Price Range": st.column_config.TextColumn("Price", width="small"),
-                "Website": st.column_config.TextColumn("Website", width="medium"),
+                "Website": st.column_config.LinkColumn("Website", width="medium"),
             },
             on_select="rerun",
             selection_mode="single-row",
@@ -179,17 +179,15 @@ with col2:
         if st.session_state.selected_restaurant and st.session_state.selected_restaurant in filtered_df['Name'].values:
             selected_info = filtered_df[filtered_df['Name'] == st.session_state.selected_restaurant].iloc[0]
             
-            st.markdown("### 🏷️ Selected Restaurant")
-            st.markdown(f"""
-            <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #ff6b6b;">
-                <h3 style="color: #333; margin-top: 0;">{selected_info['Name']}</h3>
-                <p style="color: #333;"><strong>🍽️ Cuisine:</strong> {selected_info['Cuisine']}</p>
-                <p style="color: #333;"><strong>⭐ Rating:</strong> {selected_info['Rating']}</p>
-                <p style="color: #333;"><strong>💰 Price Range:</strong> {selected_info['Price Range']}</p>
-                <p style="color: #333;"><strong>📍 Address:</strong> {selected_info['Address']}</p>
-                <p style="color: #333;"><strong>📞 Website:</strong> {selected_info['Website']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.subheader("🏷️ Selected Restaurant")
+    
+            with st.container(border=True):
+                st.markdown(f"### {selected_info['Name']}")
+                st.write(f"🍽️ **Cuisine:** {selected_info['Cuisine']}")
+                st.write(f"⭐ **Rating:** {selected_info['Rating']}")
+                st.write(f"💰 **Price Range:** {selected_info['Price Range']}")
+                st.write(f"📍 **Address:** {selected_info['Address']}")
+                st.write(f"🌐 **Website:** {selected_info['Website']}")
         else:
             st.markdown("### 🏷️ Restaurant Details")
             st.info("💡 **Tip:** Click on a marker or restaurant in the table to see detailed information!")
