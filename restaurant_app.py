@@ -102,6 +102,7 @@ def make_map(filtered_df):
 
     st.markdown("<div style='margin-bottom: 50px;'></div>", unsafe_allow_html=True)
 
+    st.markdown(f'selected_points...{selected_points}')
     # Handle click events
     if selected_points and selected_points.selection and selected_points.selection.points:
         clicked_point = selected_points.selection.points[0]
@@ -113,7 +114,6 @@ def make_map(filtered_df):
         # User clicked on empty area (no points selected)
         # Reset the selection
         st.session_state.selected_restaurant = None
-        st.session_state.show_popup = False
 
 def show_selected_restaurant(filtered_df, selected_restaurant):
     selected_info = filtered_df[filtered_df['Name'] == selected_restaurant].iloc[0]
