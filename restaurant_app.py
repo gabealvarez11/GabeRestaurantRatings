@@ -116,34 +116,9 @@ def make_map(filtered_df):
         st.session_state.selected_restaurant = None
         st.session_state.show_popup = False
 
-def make_table(fitered_df):
-    # Display table with clickable rows
-    st.dataframe(
-        filtered_df.drop(columns=["latitude", "longitude", "Blurb"]).copy(),
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Name": st.column_config.TextColumn("Restaurant Name", width="medium"),
-            "Rating": st.column_config.TextColumn("Rating", width = "small"),
-            "Price Range": st.column_config.TextColumn("Price", width="small"),
-            "Website": st.column_config.LinkColumn("Website", width="medium"),
-        },
-        on_select="rerun",
-        selection_mode="single-row",
-        key="restaurant_table"
-    )
-    
-    # Handle table selection
-    if st.session_state.get("restaurant_table", {}).get("selection", {}).get("rows"):
-        selected_row = st.session_state.restaurant_table.selection.rows[0]
-        selected_restaurant_name = filtered_df.iloc[selected_row]['Name']
-        st.session_state.selected_restaurant = selected_restaurant_name
-
-def show_selected_restaurant(filtered_df):
-    selected_info = filtered_df[filtered_df['Name'] == st.session_state.selected_restaurant].iloc[0]
+def show_selected_restaurant(filtered_df, selected_restaurant):
+    selected_info = filtered_df[filtered_df['Name'] == selected_restaurant].iloc[0]
             
-    st.subheader("🏷️ Selected Restaurant")
-
     with st.container(border=True):
         st.markdown(f"### {selected_info['Name']}")
         st.write(f"🍽️ **Cuisine:** {selected_info['Cuisine']}")
@@ -173,17 +148,19 @@ with col1:
         st.info("No restaurants to display on map.")
 
 with col2:
-    st.subheader("📋 Restaurant List")
+    st.subheader("📋 Restaurant Details")
     
     if len(filtered_df) > 0:
-        make_table(filtered_df)
-        
+
         # Display selected restaurant information
         if st.session_state.selected_restaurant and st.session_state.selected_restaurant in filtered_df['Name'].values:
-            show_selected_restaurant(filtered_df)
+
+            show_selected_restaurant(filtered_df, st.session_state.selected_restaurant)
         else:
-            st.markdown("### 🏷️ Restaurant Details")
-            st.info("💡 **Tip:** Click on a marker or restaurant in the table to see detailed information!")
+            st.info("💡 **Tip:** Click on a marker in the map to see detailed information for just that restaurant!")
+            for restaurant in filtered_df["Name"].unique():
+                show_selected_restaurant(filtered_df, restaurant)
+
     else:
         st.warning("No restaurants match your filters. Try adjusting your criteria.")
 
