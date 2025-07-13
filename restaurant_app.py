@@ -18,7 +18,7 @@ def setup_page():
 def get_data():
     conn = st.connection("gsheets", type=GSheetsConnection)
     df = conn.read(spreadsheet=st.secrets["connections"]["gsheets"]["spreadsheet"])
-    df[["latitude", "longitude"]] = df.pop("lat_long").str.split(",", expand=True).astype(float)
+    df[["lat", "lon"]] = df.pop("lat_long").str.split(",", expand=True).astype(float)
     return df
 
 def filter_data(df):
@@ -56,53 +56,54 @@ def filter_data(df):
 
 def make_map(filtered_df):
     # Create interactive map with Plotly
-    fig = px.scatter_map(
-        filtered_df,
-        lat="latitude",
-        lon="longitude",
-        hover_name="Name",
-        hover_data={
-            "Cuisine": True,
-            "Rating": True,
-            "Price Range": True,
-            "Address": True,
-            "Website": True,
-            "Blurb":False,
-            "latitude": False,
-            "longitude": False,
-        },
-        height=500
-    )
+    fig = go.Figure()
+    fig.add_trace(go.Scattermapbox(
+        lat=filtered_df['lat'],
+        lon=filtered_df['lon'],
+        mode='markers',
+        hovertext=filtered_df["Name"],
+        customdata = filtered_df[["Cuisine","Rating"]].values
+    ))
     
     # Update map layout with clean light theme
     fig.update_layout(
-        mapbox_style="carto-positron",
+        mapbox=dict(
+            style='carto-positron',
+            center=dict(lat=df['lat'].mean(), lon=df['lon'].mean()),
+            zoom=8
+        ), 
+        height=500,
+        dragmode="pan",       
         margin={"r":0,"t":0,"l":0,"b":0},
     )
-    
+
     # Customize hover template with better styling
     fig.update_traces(
         hovertemplate="<b>%{hovertext}</b><br>" +
-                    "🍽️ Cuisine: %{customdata[0]}<br>" +
-                    "⭐ Rating: %{customdata[1]}<br>" +
-                    "💰 Price: %{customdata[2]}<br>" +
-                    "📍 Address: %{customdata[3]}<br>" +
-                    "🌐 Website: See table." +
+                    "Cuisine: %{customdata[0]}<br>" +
+                    "Rating: %{customdata[1]}<br>" +
                     "<extra></extra>",
         marker=dict(size=20, opacity=0.9)
     )
 
+    # selected_points = st.plotly_chart(
+    #     fig, 
+    #     use_container_width=True, 
+    #     key="restaurant_map",
+    #     on_select="rerun",
+    #     selection_mode="points"
+    # )
+
     selected_points = st.plotly_chart(
-        fig, 
-        use_container_width=True, 
-        key="restaurant_map",
+        fig,
         on_select="rerun",
-        selection_mode="points"
+        key="map_selection",
+        config={"scrollZoom": True}
     )
 
-    st.markdown("<div style='margin-bottom: 50px;'></div>", unsafe_allow_html=True)
-
-    st.write(st.session_state["restaurant_map"])
+    # Check for any event data
+    # st.write("All session state:", {k: v for k, v in st.session_state.items() if 'map' in k})
+    #st.markdown("<div style='margin-bottom: 50px;'></div>", unsafe_allow_html=True)
 
     # Handle click events
     if selected_points and selected_points.selection and selected_points.selection.points:
@@ -146,10 +147,6 @@ with col1:
         make_map(filtered_df)
     else:
         st.info("No restaurants to display on map.")
-    
-    names =filtered_df["Name"].unique()
-    st.markdown(f"Selected...{st.session_state.selected_restaurant}")
-    st.markdown(f"Valid names...{names}")
 
 with col2:
     st.subheader("📋 Restaurant Details")
