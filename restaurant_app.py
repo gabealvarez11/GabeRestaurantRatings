@@ -109,7 +109,7 @@ def make_map(filtered_df):
         point_index = clicked_point['point_index']
         clicked_restaurant = filtered_df.iloc[point_index]['Name']
         st.session_state.selected_restaurant = clicked_restaurant
-        st.info("💡 **Tip:** Double-click anywhere on the map to unselect.")
+        st.info("💡 **Tip:** To unselect, click the same marker again, or double-click anywhere else on the map.")
     else:
         # User clicked on empty area (no points selected)
         # Reset the selection
