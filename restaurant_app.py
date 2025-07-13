@@ -71,7 +71,6 @@ def make_map(filtered_df):
             "latitude": False,
             "longitude": False,
         },
-        zoom=12,
         height=500
     )
     
