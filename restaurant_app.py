@@ -117,7 +117,7 @@ def make_map(filtered_df):
 
 def show_selected_restaurant(filtered_df, selected_restaurant):
     selected_info = filtered_df[filtered_df['Name'] == selected_restaurant].iloc[0]
-            
+    
     with st.container(border=True):
         st.markdown(f"### {selected_info['Name']}")
         st.write(f"🍽️ **Cuisine:** {selected_info['Cuisine']}")
@@ -145,6 +145,10 @@ with col1:
         make_map(filtered_df)
     else:
         st.info("No restaurants to display on map.")
+    
+    names =filtered_df["Name"].unique()
+    st.markdown(f"Selected...{st.session_state.selected_restaurant}")
+    st.markdown(f"Valid names...{names}")
 
 with col2:
     st.subheader("📋 Restaurant Details")
