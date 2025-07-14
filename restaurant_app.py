@@ -34,7 +34,9 @@ def filter_data(df):
         cuisine_split = cuisine_entry.split(", ")
         for cuisine in cuisine_split:
             cuisine_options.add(cuisine)
-    cuisine_options = ["All"] + list(cuisine_options)
+    cuisine_options = list(cuisine_options)
+    cuisine_options.sort()
+    cuisine_options = ["All"] + cuisine_options
     selected_cuisine = st.sidebar.selectbox("Select Cuisine:", cuisine_options)
 
     # Rating filter
