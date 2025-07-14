@@ -48,7 +48,8 @@ def filter_data(df):
 
     # Neighborhood filter
     loc_options = list(df["Location"].unique())
-    selected_location = st.sidebar.selectbox("Select Cuisine:", ["All"] + loc_options)
+    loc_options.sort()
+    selected_location = st.sidebar.selectbox("Select Location:", ["All"] + loc_options)
 
     # Apply filters
     filtered_df = df.copy()
