@@ -29,7 +29,12 @@ def filter_data(df):
     st.sidebar.header("🔍 Filter Restaurants")
 
     # Cuisine filter
-    cuisine_options = ['All'] + list(df['Cuisine'].unique())
+    cuisine_options = set()
+    for cuisine_entry in list(df['Cuisine'].unique()):
+        cuisine_split = cuisine_entry.split(", ")
+        for cuisine in cuisine_split:
+            cuisine_options.add(cuisine)
+    cuisine_options = ["All"] + list(cuisine_options)
     selected_cuisine = st.sidebar.selectbox("Select Cuisine:", cuisine_options)
 
     # Rating filter
@@ -43,7 +48,7 @@ def filter_data(df):
     filtered_df = df.copy()
 
     if selected_cuisine != 'All':
-        filtered_df = filtered_df[filtered_df['Cuisine'] == selected_cuisine]
+        filtered_df = filtered_df[filtered_df['Cuisine'].str.contains(selected_cuisine)]
 
     filtered_df = filtered_df[filtered_df['Rating'] >= min_rating]
 
