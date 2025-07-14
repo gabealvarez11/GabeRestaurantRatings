@@ -47,7 +47,7 @@ def filter_data(df):
     max_price = st.sidebar.slider("Maximum Price (💲):", 1, 3, 3, 1)
 
     # Neighborhood filter
-    loc_options = list(filtered_df["Location"]).unique()
+    loc_options = list(filtered_df["Location"].unique())
     selected_location = st.sidebar.selectbox("Select Cuisine:", ["All"] + loc_options)
 
     # Apply filters
