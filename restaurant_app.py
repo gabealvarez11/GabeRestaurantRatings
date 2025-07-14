@@ -59,7 +59,6 @@ def filter_data(df):
         return emoji * int(rating) if rating > 0 else ""
 
     filtered_df["Rating"] = filtered_df["Rating"].apply(format_stars, args=("⭐"))
-    filtered_df["Price Range"] = filtered_df["Price Range"].str.replace("$","💲")
 
     return filtered_df
 
