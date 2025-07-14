@@ -44,7 +44,7 @@ def filter_data(df):
 
     # Price range filter
     price_options = ['All'] + list(df['Price Range'].unique())
-    selected_price = st.sidebar.selectbox("Price Range:", price_options)
+    max_price = st.sidebar.slider("Maximum Price (💲):", 1, 3, 3, 1)
 
     # Apply filters
     filtered_df = df.copy()
@@ -53,14 +53,13 @@ def filter_data(df):
         filtered_df = filtered_df[filtered_df['Cuisine'].str.contains(selected_cuisine)]
 
     filtered_df = filtered_df[filtered_df['Rating'] >= min_rating]
+    filtered_df = filtered_df[filtered_df['Price Range'].str.len() <= max_price]
 
-    def format_stars(rating):
-        return "⭐" * int(rating) if rating > 0 else ""
+    def format_stars(rating, emoji):
+        return emoji * int(rating) if rating > 0 else ""
 
-    filtered_df["Rating"] = filtered_df["Rating"].apply(format_stars)
-
-    if selected_price != 'All':
-        filtered_df = filtered_df[filtered_df['Price Range'] == selected_price]
+    filtered_df["Rating"] = filtered_df["Rating"].apply(format_stars, args=("⭐"))
+    filtered_df["Price Range"] = filtered_df["Price Range"].str.replace("$","💲")
 
     return filtered_df
 
