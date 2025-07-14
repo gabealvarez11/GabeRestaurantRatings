@@ -46,11 +46,18 @@ def filter_data(df):
     price_options = ['All'] + list(df['Price Range'].unique())
     max_price = st.sidebar.slider("Maximum Price (💲):", 1, 3, 3, 1)
 
+    # Neighborhood filter
+    loc_options = list(df["Location"]).unique()
+    selected_location = st.sidebar.selectbox("Select Cuisine:", ["All"] + loc_options)
+
     # Apply filters
     filtered_df = df.copy()
 
     if selected_cuisine != 'All':
         filtered_df = filtered_df[filtered_df['Cuisine'].str.contains(selected_cuisine)]
+
+    if selected_location != "All":
+        filtered_df = filtered_df[filtered_df['Location'] == selected_location]
 
     filtered_df = filtered_df[filtered_df['Rating'] >= min_rating]
     filtered_df = filtered_df[filtered_df['Price Range'].str.len() <= max_price]
@@ -129,12 +136,13 @@ def show_selected_restaurant(filtered_df, selected_restaurant):
     
     with st.container(border=True):
         st.markdown(f"### {selected_info['Name']}")
-        st.write(f"🍽️ **Cuisine:** {selected_info['Cuisine']}")
-        st.write(f"⭐ **Rating:** {selected_info['Rating']}")
-        st.write(f"💰 **Price Range:** {selected_info['Price Range']}")
-        st.write(f"📍 **Address:** {selected_info['Address']}")
-        st.write(f"🌐 **Website:** {selected_info['Website']}")
-        st.write(f"💬 **Blurb:** {selected_info['Blurb']}")
+        st.write(f"**Cuisine:** {selected_info['Cuisine']}")
+        st.write(f"**Location:** {selected_info['Location']}")
+        st.write(f"**Rating:** {selected_info['Rating']}")
+        st.write(f"**Price:** {selected_info['Price Range']}")
+        st.write(f"**Address:** {selected_info['Address']}")
+        st.write(f"**Website:** {selected_info['Website']}")
+        st.write(f"**Blurb:** {selected_info['Blurb']}")
 
 setup_page()
 df = get_data()
