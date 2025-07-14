@@ -12,8 +12,11 @@ def setup_page():
     # App title
     st.title("🍽️ Bay Area vegetarian eats, curated by Gabe and Carol")
     st.markdown("---")
-    st.markdown("We've tried over 200 spots around town and have identified the following restaurants as deserving of one, two, or three 'Caro-lin' stars.")
-    st.markdown("Use the filters on the left to narrow the options, then select a restaurant on the map or in the list to see more details, including our review.")
+    st.markdown("We've tried over 200 spots around town and have identified the following restaurants as deserving of one, two, or three 'Caro-lin' [stars](https://en.wikipedia.org/wiki/Michelin_Guide#Stars):")
+    st.markdown(" - ⭐: A very good restaurant in its category")
+    st.markdown(" - ⭐⭐: Excellent cooking, worth a detour")
+    st.markdown(" - ⭐⭐⭐: Exceptional cuisine, worth a special journey")
+    st.markdown("Use the filters on the left to narrow the options, then select a restaurant on the map to see more details, including our review. Or just scroll through all relevant restaurants!")
 
 def get_data():
     conn = st.connection("gsheets", type=GSheetsConnection)
@@ -111,7 +114,6 @@ def make_map(filtered_df):
         point_index = clicked_point['point_index']
         clicked_restaurant = filtered_df.iloc[point_index]['Name']
         st.session_state.selected_restaurant = clicked_restaurant
-        st.info("💡 **Tip:** To unselect, click the same marker again, or double-click anywhere else on the map.")
     else:
         # User clicked on empty area (no points selected)
         # Reset the selection
@@ -149,16 +151,19 @@ with col1:
         st.info("No restaurants to display on map.")
 
 with col2:
-    st.subheader("📋 Restaurant Details")
     
     if len(filtered_df) > 0:
 
         # Display selected restaurant information
         if st.session_state.selected_restaurant and st.session_state.selected_restaurant in filtered_df['Name'].values:
+            st.info("💡 **Tip:** To unselect, click the same marker again, click another resaurant's marker, or double-click anywhere else on the map.")
+            st.subheader("📋 Restaurant Details")
 
             show_selected_restaurant(filtered_df, st.session_state.selected_restaurant)
         else:
-            st.info("💡 **Tip:** Click on a marker in the map to see detailed information for just that restaurant!")
+            st.info("💡 **Tip:** Currently showing info for all restaurants in filter. Click on a restaurant in the map to see detailed information for just that one!")
+            st.subheader("📋 Restaurant Details")
+
             for restaurant in filtered_df["Name"].unique():
                 show_selected_restaurant(filtered_df, restaurant)
 
