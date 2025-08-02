@@ -96,14 +96,14 @@ def make_map(filtered_df):
 
     # Define color of markers based on rating
     def get_color(rating):
-        if rating == 3:
+        if rating == "⭐⭐⭐":
             return '#FFD700'  # Gold
-        elif rating == 2:
+        elif rating == "⭐⭐":
             return '#C0C0C0'  # Silver
         else:
-            return '#B87333'  # Bronze
+            return '#CD7F32'  # Bronze
     colors = filtered_df["Rating"].apply(get_color)
-    
+
     # Customize hover template with better styling
     fig.update_traces(
         hovertemplate="<b>%{hovertext}</b><br>" +
