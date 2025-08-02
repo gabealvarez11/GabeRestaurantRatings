@@ -150,7 +150,7 @@ def show_selected_restaurant(filtered_df, selected_restaurant):
             image_path = f'img/{selected_info['Name']}.jpg'
             image = Image.open(image_path)
             image = ImageOps.exif_transpose(image)  # Correct orientation
-            st.image(image, caption="Processed Image", use_column_width=True)
+            st.image(image)
         except:
             st.write("No image available.")
 
