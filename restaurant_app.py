@@ -147,7 +147,7 @@ def show_selected_restaurant(filtered_df, selected_restaurant):
 
         try:
             st.image(f'img/{selected_info['Name']}.jpg')
-        else:
+        except:
             st.write("No image available.")
 
 setup_page()
