@@ -94,22 +94,24 @@ def make_map(filtered_df):
         margin={"r":0,"t":0,"l":0,"b":0},
     )
 
+    # Define color of markers based on rating
+    def get_color(rating):
+        if rating == 3:
+            return '#FFD700'  # Gold
+        elif rating == 2:
+            return '#C0C0C0'  # Silver
+        else:
+            return '#B87333'  # Bronze
+    colors = filtered_df["Rating"].apply(get_color)
+    
     # Customize hover template with better styling
     fig.update_traces(
         hovertemplate="<b>%{hovertext}</b><br>" +
                     "Cuisine: %{customdata[0]}<br>" +
                     "Rating: %{customdata[1]}<br>" +
                     "<extra></extra>",
-        marker=dict(size=20, opacity=0.9)
+        marker=dict(size=20, opacity=0.9,color=colors)
     )
-
-    # selected_points = st.plotly_chart(
-    #     fig, 
-    #     use_container_width=True, 
-    #     key="restaurant_map",
-    #     on_select="rerun",
-    #     selection_mode="points"
-    # )
 
     selected_points = st.plotly_chart(
         fig,
@@ -117,10 +119,6 @@ def make_map(filtered_df):
         key="map_selection",
         config={"scrollZoom": True}
     )
-
-    # Check for any event data
-    # st.write("All session state:", {k: v for k, v in st.session_state.items() if 'map' in k})
-    #st.markdown("<div style='margin-bottom: 50px;'></div>", unsafe_allow_html=True)
 
     # Handle click events
     if selected_points and selected_points.selection and selected_points.selection.points:
