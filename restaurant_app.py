@@ -145,6 +145,11 @@ def show_selected_restaurant(filtered_df, selected_restaurant):
         st.write(f"**Website:** {selected_info['Website']}")
         st.write(f"**Blurb:** {selected_info['Blurb']}")
 
+        try:
+            st.image(f'img/{selected_info['Name']}.jpg')
+        else:
+            st.write("No image available.")
+
 setup_page()
 df = get_data()
 filtered_df = filter_data(df)
