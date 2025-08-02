@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_gsheets import GSheetsConnection
+from PIL import Image, ImageOps
 
 def setup_page():
     # Set page configuration
@@ -146,7 +147,10 @@ def show_selected_restaurant(filtered_df, selected_restaurant):
         st.write(f"**Blurb:** {selected_info['Blurb']}")
 
         try:
-            st.image(f'img/{selected_info['Name']}.jpg')
+            image_path = f'img/{selected_info['Name']}.jpg'
+            image = Image.open(image_path)
+            image = ImageOps.exif_transpose(image)  # Correct orientation
+            st.image(image, caption="Processed Image", use_column_width=True)
         except:
             st.write("No image available.")
 
