@@ -23,6 +23,7 @@ def get_data():
     conn = st.connection("gsheets", type=GSheetsConnection)
     df = conn.read(spreadsheet=st.secrets["connections"]["gsheets"]["spreadsheet"])
     df[["lat", "lon"]] = df.pop("lat_long").str.split(",", expand=True).astype(float)
+    df = df.drop(columns="Photo Status")
     return df
 
 def filter_data(df):
